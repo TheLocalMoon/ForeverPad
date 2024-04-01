@@ -31,6 +31,99 @@ if values["DEBUG"] != "True":
 
 logging.info('loaded settings.egg')
 
+# https://stackoverflow.com/questions/39458337/is-there-a-way-to-add-close-buttons-to-tabs-in-tkinter-ttk-notebook/39459376#39459376
+class CNB(ttk.Notebook):
+    """A ttk Notebook with close buttons on each tab"""
+    __initialized = False
+
+    def __init__(self, *args, **kwargs):
+        if not self.__initialized:
+            self.__initialize_custom_style()
+            self.__inititialized = True
+
+        kwargs["style"] = "CNB"
+        ttk.Notebook.__init__(self, *args, **kwargs)
+
+        self._active = None
+
+        self.bind("<ButtonPress-1>", self.on_close_press, True)
+        self.bind("<ButtonRelease-1>", self.on_close_release)
+
+    def on_close_press(self, event):
+        """Called when the button is pressed over the close button"""
+
+        element = self.identify(event.x, event.y)
+
+        if "close" in element:
+            index = self.index("@%d,%d" % (event.x, event.y))
+            self.state(['pressed'])
+            self._active = index
+            return "break"
+
+    def on_close_release(self, event):
+        """Called when the button is released"""
+        if not self.instate(['pressed']):
+            return
+
+        element =  self.identify(event.x, event.y)
+        if "close" not in element:
+            # user moved the mouse off of the close button
+            return
+
+        index = self.index("@%d,%d" % (event.x, event.y))
+
+        if self._active == index:
+            if index != 0:
+                self.forget(index)
+                logging.info('removed tab')
+            else:
+                pass
+
+    def __initialize_custom_style(self):
+        style = ttk.Style()
+        self.images = (
+            tk.PhotoImage("img_close", data='''
+                R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
+                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
+                5kEJADs=
+                '''),
+            tk.PhotoImage("img_closeactive", data='''
+                R0lGODlhCAAIAMIEAAAAAP/SAP/bNNnZ2cbGxsbGxsbGxsbGxiH5BAEKAAQALAAA
+                AAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU5kEJADs=
+                '''),
+            tk.PhotoImage("img_closepressed", data='''
+                R0lGODlhCAAIAMIEAAAAAOUqKv9mZtnZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
+                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
+                5kEJADs=
+            ''')
+        )
+
+        style.element_create("close", "image", "img_close",
+                            ("active", "pressed", "!disabled", "img_closepressed"),
+                            ("active", "!disabled", "img_closeactive"), border=8, sticky='')
+        style.layout("CNB", [("CNB.client", {"sticky": "nswe"})])
+        style.layout("CNB.Tab", [
+            ("CNB.tab", {
+                "sticky": "nswe",
+                "children": [
+                    ("CNB.padding", {
+                        "side": "top",
+                        "sticky": "nswe",
+                        "children": [
+                            ("CNB.focus", {
+                                "side": "top",
+                                "sticky": "nswe",
+                                "children": [
+                                    ("CNB.label", {"side": "left", "sticky": ''}),
+                                    ("CNB.close", {"side": "left", "sticky": ''}),
+                                ]
+                        })
+                    ]
+                })
+            ]
+        })
+    ])
+
 class Tab:
     def __init__(self, parent, file_path=None, content="", name=""):
         refresh_s()
@@ -63,15 +156,15 @@ class ForeverPad:
         self.load_translations()
         self.root.title("ForeverPad")
         self.root.geometry('800x450')
+        self.root.iconbitmap("icon.ico")
         #self.root.resizable(False, False) 
 
         # theme stuff
         self.style = ttk.Style()
 
-        self.tabs = ttk.Notebook(root)
+        self.tabs = CNB(root)
         self.tabs.pack(expand=True, fill='both')
         self.tabs.bind('<Button-3>', self.show_tab_context_menu)
-        self.tabs.bind('<ButtonRelease-1>', self.refreshtab)
 
         self.tabcount = 1
         self.tabos = self.add_tab()
@@ -362,6 +455,7 @@ class ForeverPad:
         self.line_label = tk.Label(self.status_bar, text=f"{self.translate[self.language]["length"]}.: 1  {self.translate[self.language]["lines"]}.: 1   |  {self.translate[self.language]["col"]}.: 1  {self.translate[self.language]["lpos"]}.: 1  {self.translate[self.language]["lpos"]}.: 1")
         self.line_label.pack(side=tk.LEFT, padx=(2, 0))
         self.update_indicators()
+        self.toggle_theme()
         return self.status_bar
 
     def open_file(self):

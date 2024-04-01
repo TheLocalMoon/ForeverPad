@@ -15,7 +15,7 @@
       "settings": "Settings",
       "new": "New",
       "open": "Open",
-      "saveas": "Save as",
+      "saveas": "Save As",
       "save": "Save",
       "exit": "Exit",
       "file": "File",
@@ -51,7 +51,16 @@
       "other": "Other",
       "lang": "Language:",
       "langchang": "The app will restart to change the language.",
-      "debug": "Debug"
+      "debug": "Debug",
+      "plugins": "Plugins",
+      "downloader": "Plugin Downloader",
+      "failedpkg": "Failed to fetch plugins",
+      "pspd": "Please select a plugin to download.",
+      "gg": "Download Complete",
+      "downsucc": "downloaded successfuly",
+      "plugin": "Plugin",
+      "failpkg": "Failed to download plugin",
+      "pkgdownload": "Download Plugin"
     },
     "cz": {
         "untitled": "Bez názvu",
@@ -69,7 +78,7 @@
         "settings": "Nastavení",
         "new": "Nový",
         "open": "Otevřít",
-        "saveas": "Uložit jako",
+        "saveas": "Uložit Jako",
         "save": "Uložit",
         "exit": "Ukončit",
         "file": "Soubor",
@@ -105,7 +114,16 @@
         "other": "Ostatní",
         "lang": "Jazyk:",
         "langchang": "Aplikace se restartuje pro změnění jazyka.",
-        "debug": "Oprava chyb"
+        "debug": "Oprava chyb",
+        "plugins": "Doplňky",   
+        "downloader": "Stahování doplňků",
+        "failedpkg": "Získání doplňků selhalo",
+        "pspd": "Prosím vyberte doplněk na stažení.",
+        "gg": "Stahování dokončeno",
+        "downsucc": "Úspěšně staženo",
+        "plugin": "Doplněk",
+        "failpkg": "Stahování doplňku selhalo",
+        "pkgdownload": "Stáhnout doplněk"
       },
       "ru": {
           "untitled": "Без названия",
@@ -159,6 +177,15 @@
           "other": "Другое",
           "lang": "Язык:",
           "langchang": "Приложение перезагрузится для изменения языка.",
-          "debug": "Отладка"
+          "debug": "Отладка",
+          "plugins": "Дополнения",
+          "downloader": "Загрузчик плагинов",
+          "failedpkg": "Не удалось получить плагины",
+          "pspd": "Пожалуйста, выберите плагин для загрузки.",
+          "gg": "Загрузка завершена",
+          "downsucc": "успешно загружен",
+          "plugin": "Плагин",
+          "failpkg": "Не удалось загрузить плагин",
+          "pkgdownload": "Загрузить плагин"
       }
 }  

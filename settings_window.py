@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkinter import font as fontus
+import plugins_window as pw
 import json
 import logging
 import constants
 import os
+import requests
 
 # default settings
 if not os.path.exists('settings.egg'):
@@ -45,6 +47,7 @@ class SettingsWindow:
         # rip 5492429745 lines
         if values["LANG"] == "English": self.language = "en"
         elif values["LANG"] == "Czech": self.language = "cz"
+        elif values["LANG"] == "Russian": self.language = "ru"
         else: self.language = "en"
         logging.info('settings: loaded languages')
         ######################
@@ -58,20 +61,78 @@ class SettingsWindow:
         self.text_tab = tk.Frame(self.notebook)
         self.window_tab = tk.Frame(self.notebook)
         self.other_tab = tk.Frame(self.notebook)
+        self.plugins_tab = tk.Frame(self.notebook)
 
         self.notebook.add(self.window_tab, text=self.translate[self.language]["window"])
         self.notebook.add(self.text_tab, text=self.translate[self.language]["text"])
+        self.notebook.add(self.plugins_tab, text=self.translate[self.language]["plugins"])
         self.notebook.add(self.other_tab, text=self.translate[self.language]["other"])
 
         self.notebook.pack(expand=1, fill='both')
 
         self.create_text_settings()
         self.create_window_settings()
+        self.create_plugins_settings()
         self.create_other_settings()
 
         self.apply_button = ttk.Button(self.settings_window, text=self.translate[self.language]["apply"], command=self.apply_settings)
         self.apply_button.pack(pady=10)
+        self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
+        
         logging.info('settings: created window')
+
+    def create_plugins_settings(self):
+        self.plugins_frame = tk.Frame(self.plugins_tab)
+        self.plugins_frame.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+
+        self.plugins_list = tk.Listbox(self.plugins_frame, selectmode=tk.SINGLE)
+        self.plugins_list.pack(fill=tk.BOTH, expand=True)
+
+        self.refresh_plugins_list()
+
+        remove_button = ttk.Button(self.plugins_tab, text="Remove Plugin", command=self.remove_plugin)
+        remove_button.pack(side=tk.TOP, anchor=tk.NE)
+        
+        pow_haha = ttk.Button(self.plugins_tab, text="Plugin Downloader", command=self.hax)
+        pow_haha.pack(side=tk.BOTTOM, anchor=tk.SE)
+
+    def on_tab_changed(self, event):
+        current_tab = self.notebook.select()
+        if current_tab == self.notebook.tabs()[2]:  # Index of the plugins tab
+            self.apply_button.pack_forget()
+        else:
+            self.apply_button.pack(pady=10)
+
+    def refresh_plugins_list(self):
+        self.plugins_list.delete(0, tk.END)
+        plugins_dir = "plugins/"
+        if os.path.exists(plugins_dir) and os.path.isdir(plugins_dir):
+            plugins = [f for f in os.listdir(plugins_dir) if f.endswith(".py")]
+            for plugin in plugins:
+                self.plugins_list.insert(tk.END, plugin)
+
+    def remove_plugin(self):
+        selected_index = self.plugins_list.curselection()
+        if selected_index:
+            selected_plugin = self.plugins_list.get(selected_index)
+            plugins_dir = "plugins/"
+            plugin_path = os.path.join(plugins_dir, selected_plugin)
+            if os.path.exists(plugin_path):
+                os.remove(plugin_path)
+                self.refresh_plugins_list()
+
+    def hax(self):
+        pw.PluginsMenu(self)
+
+    def remove_plugin(self):
+        selected_index = self.plugins_list.curselection()
+        if selected_index:
+            selected_plugin = self.plugins_list.get(selected_index)
+            plugins_dir = "plugins/"
+            plugin_path = os.path.join(plugins_dir, selected_plugin)
+            if os.path.exists(plugin_path):
+                os.remove(plugin_path)
+                self.refresh_plugins_list()
 
     def load_translations(self):
         with open('translate.json', 'r', encoding='utf-8') as file:

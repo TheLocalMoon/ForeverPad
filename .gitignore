@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 commit_to_github.bat
+settings.egg
