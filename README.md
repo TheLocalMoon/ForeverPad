@@ -28,3 +28,4 @@ ForeverPad is a simple text editor built with Python's Tkinter library. It offer
 | Japanese   | Needs Translator |
 | Korean     | Needs Translator |
 
+ps. preffered Python version to use: 3.12.2 x64 bits
