@@ -1,7 +1,10 @@
+[<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">](https://github.com/TheLocalMoon/ForeverPad)
+[<img src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white">](https://discord.gg/Rrkxst2GWn)
 # ForeverPad
 *"Better than Notepad++!"*
 
 ForeverPad is a simple text editor built with Python's Tkinter library. It offers basic text editing features along with some handy tools like encoding/decoding text and internationalization support.
+
 
 ## Key Features:
 
@@ -27,5 +30,13 @@ ForeverPad is a simple text editor built with Python's Tkinter library. It offer
 | Chinese    | Needs Translator |
 | Japanese   | Needs Translator |
 | Korean     | Needs Translator |
+
+## Stuff i used so i wouldnt get copyright claimed
+
+[Markdown Badges](https://ileriayo.github.io/markdown-badges/)
+
+[ChatGPT](https://chat.openai.com/)
+
+----------------------------------------
 
 *ps. preffered Python version to use: 3.12.2 x64 bits*
