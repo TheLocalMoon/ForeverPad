@@ -28,10 +28,4 @@ ForeverPad is a simple text editor built with Python's Tkinter library. It offer
 | Japanese   | Needs Translator |
 | Korean     | Needs Translator |
 
-## Notes
-
-**When using setup.py to make an .exe file, you may get an error "KeyError: 'IMPORT_STAR'". To fix it, do:**
-
-`pip install --upgrade --pre --extra-index-url https://marcelotduarte.github.io/packages/ cx_Freeze`
-
 *ps. preffered Python version to use: 3.12.2 x64 bits*
