@@ -1,7 +1,5 @@
-[<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">](https://github.com/TheLocalMoon/ForeverPad)
-[<img src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white">](https://discord.gg/Rrkxst2GWn)
+[![GitHub release](https://img.shields.io/github/release/TheLocalMoon/ForeverPad?include_prereleases=&sort=semver&color=blue)](https://github.com/TheLocalMoon/ForeverPad/releases/) [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](#license) [![issues - ForeverPad](https://img.shields.io/github/issues/TheLocalMoon/ForeverPad)](https://github.com/TheLocalMoon/ForeverPad/issues) [![dependency - importlib](https://img.shields.io/badge/dependency-importlib-blue)](https://pypi.org/project/importlib) [![Discord - jkUzwDrEeq](https://img.shields.io/badge/Discord-jkUzwDrEeq-2ea44f)](https://discord.gg/jkUzwDrEeq)
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 # ForeverPad
 *"Better than Notepad++!"*
 
