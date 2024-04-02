@@ -29,15 +29,10 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s',
                     level=logging.DEBUG, datefmt='%I:%M:%S')
 
-values = {}
 def refresh_s():
     global values
     with open('settings.egg', 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line and ':' in line:
-                key, value = line.split(': ', 1)
-                values[key] = value
+        values = {line.split(': ', 1)[0]: line.split(': ', 1)[1].strip() for line in file if ':' in line}
 refresh_s()
 
 if values["DEBUG"] != "True":
@@ -160,6 +155,59 @@ class Tab:
         self.tab = self.text_area
         logging.info('created tab')
 
+class SearchReplaceWindow:
+    def __init__(self, parent, text_widget):
+        self.parent = parent
+        self.text_widget = text_widget
+
+        self.window = tk.Toplevel(parent)
+        self.window.title("Search/Replace")
+        self.window.geometry("265x130")
+        self.window.resizable(False,False)
+
+        self.search_label = tk.Label(self.window, text="Search:")
+        self.search_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.search_entry = tk.Entry(self.window, width=20)
+        self.search_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        self.replace_label = tk.Label(self.window, text="Replace:")
+        self.replace_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.replace_entry = tk.Entry(self.window, width=20)
+        self.replace_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        self.search_button = tk.Button(self.window, text="Search", command=self.search_text)
+        self.search_button.grid(row=100, column=100, padx=14, pady=5, sticky="se")
+        self.replace_button = tk.Button(self.window, text="Replace", command=self.replace_text)
+        self.replace_button.grid(row=99, column=100, padx=14, pady=5, sticky="se")
+
+    def search_text(self):
+        self.window.bell()
+        search_text = self.search_entry.get()
+        if search_text:
+            start_pos = self.text_widget.search(search_text, "1.0", tk.END)
+            if start_pos:
+                end_pos = f"{start_pos}+{len(search_text)}c"
+                self.text_widget.tag_remove("search", "1.0", tk.END)
+                self.text_widget.tag_add("search", start_pos, end_pos)
+                self.text_widget.mark_set(tk.INSERT, start_pos)
+                self.text_widget.tag_config('search', foreground='red')
+                self.text_widget.see(start_pos)
+                self.text_widget.focus_set()
+            else: messagebox.showwarning("Warning","No specific text found")
+
+    def replace_text(self):
+        self.window.bell()
+        self.text_widget.tag_config('search', foreground='white')
+        search_text = self.search_entry.get()
+        replace_text = self.replace_entry.get()
+        if search_text and replace_text:
+            start_pos = self.text_widget.search(search_text, "1.0", tk.END)
+            if start_pos:
+                end_pos = f"{start_pos}+{len(search_text)}c"
+                self.text_widget.delete(start_pos, end_pos)
+                self.text_widget.insert(start_pos, replace_text)
+        else: messagebox.showwarning("Warning","No specific text found")
+
 class ForeverPad:
     def __init__(self, root):
         self.root = root
@@ -238,6 +286,7 @@ class ForeverPad:
         self.tab_context_menu.add_command(label=self.translate[self.language]["del"], command=self.delete_tab)
 
         self.root.pack_propagate(False)
+        self.tab.bind("<Control-f>",self.findwind)
 
         self.statusos = self.create_status_bar()
         self.toggle_theme()
@@ -245,6 +294,9 @@ class ForeverPad:
         logging.info('created window')
 
         self.load_plugins()
+
+    def findwind(self, event=None):
+        SearchReplaceWindow(self.root, self.tab)
 
     def load_plugins(self):
         plugins = {}
@@ -574,7 +626,7 @@ class ForeverPad:
 
 def main():
     root = tk.Tk()
-    app = ForeverPad(root)
+    ForeverPad(root)
     root.mainloop()
 
 if __name__ == "__main__":

@@ -10,15 +10,10 @@ import os
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
 
-values = {}
 def refresh_s():
     global values
     with open('settings.egg', 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line and ':' in line:
-                key, value = line.split(': ', 1)
-                values[key] = value
+        values = {line.split(': ', 1)[0]: line.split(': ', 1)[1].strip() for line in file if ':' in line}
 refresh_s()
 
 if values["DEBUG"] != "True":
