@@ -33,8 +33,6 @@ ForeverPad is a simple text editor built with Python's Tkinter library. It offer
 
 ## Stuff i used so i wouldnt get copyright claimed
 
-[Markdown Badges](https://ileriayo.github.io/markdown-badges/)
-
 [ChatGPT](https://chat.openai.com/)
 
 ----------------------------------------
