@@ -4,21 +4,7 @@ from tkinter import font as fontus
 import plugins_window as pw
 import json
 import logging
-import constants
 import os
-import requests
-
-# default settings
-if not os.path.exists('settings.egg'):
-    with open('settings.egg', 'w') as file:
-        file.write(f"""SETTING -
-FONT: {constants.DEFAULT_FONT_TYPE}
-FONT_SIZE: {constants.DEFAULT_FONT_SIZE}
-THEME: {constants.DEFAULT_THEME}
-BOLD: {constants.DEF_BOLD}
-LANG: {constants.ENG}
-DEBUG: {constants.DEF_DEBUG}""")
-    logging.info('Created settings.egg')
 
 # logging
 logger = logging.getLogger(__name__)

@@ -5,10 +5,24 @@ import os
 import json
 import sys
 import logging
+import constants
 import importlib.util
 from tkinter import scrolledtext, filedialog, messagebox, Menu, ttk
-from settings_window import SettingsWindow
 from base64 import b64encode, b64decode
+
+# default settings
+if not os.path.exists('settings.egg'):
+    with open('settings.egg', 'w') as file:
+        file.write(f"""SETTING -
+FONT: {constants.DEFAULT_FONT_TYPE}
+FONT_SIZE: {constants.DEFAULT_FONT_SIZE}
+THEME: {constants.DEFAULT_THEME}
+BOLD: {constants.DEF_BOLD}
+LANG: {constants.ENG}
+DEBUG: {constants.DEF_DEBUG}""")
+    logging.info('Created settings.egg')
+
+from settings_window import SettingsWindow
 
 # logging
 logger = logging.getLogger(__name__)
