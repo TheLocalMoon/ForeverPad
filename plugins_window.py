@@ -43,13 +43,42 @@ class PluginsMenu:
         self.main_frame = ttk.Frame(self.ohio)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.plugins_listbox = tk.Listbox(self.main_frame)
-        self.plugins_listbox.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.plugins_frame = tk.Frame(self.ohio)
+        self.plugins_frame.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+
+        self.plugins_listbox = tk.Listbox(self.plugins_frame, selectmode=tk.SINGLE)
+        self.plugins_listbox.pack(fill=tk.BOTH, expand=True)
 
         self.download_button = ttk.Button(self.main_frame, text=self.translate[self.language]["pkgdownload"], command=self.download_plugin)
-        self.download_button.pack(padx=5, pady=5)
+        self.download_button.pack(side=tk.BOTTOM, anchor=tk.SE)
+
+        self.plugin_name_label = tk.Label(self.main_frame, text="-", font=("Arial", 12, "bold"))
+        self.plugin_name_label.pack(anchor=tk.NW, padx=10, pady=10)
+
+        self.plugin_description_label = tk.Label(self.main_frame, text="-", wraplength=350)
+        self.plugin_description_label.pack(anchor=tk.NW, padx=10)
+
+        self.plugins_listbox.bind("<<ListboxSelect>>", self.callback)
 
         self.refresh_plugins_list()
+        self.get_plugin_data()
+
+    def get_plugin_data(self):
+        url = "https://raw.githubusercontent.com/TheLocalMoon/ForeverPlugins/main/plugins/data.json"
+        response = requests.get(url)
+        if response.status_code == 200:
+            self.json_data = response.json()
+        else:
+            logging.error("fail: ", response.status_code)
+
+    def callback(self, event=None):
+        try:
+            plugin_info = self.json_data[self.plugins_listbox.get(self.plugins_listbox.curselection()[0])]
+            self.plugin_name_label.config(text=plugin_info["name"])
+            self.plugin_description_label.config(text=plugin_info["description"])
+        except:
+            self.plugin_name_label.config(text="")
+            self.plugin_description_label.config(text="No description provided.")
 
     def load_translations(self):
         with open('translate.json', 'r', encoding='utf-8') as file:

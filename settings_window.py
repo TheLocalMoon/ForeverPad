@@ -54,7 +54,8 @@ class SettingsWindow:
         self.load_translations()
         self.settings_window = tk.Toplevel(parent.root)
         self.settings_window.title(self.translate[self.language]["settings"])
-        self.settings_window.geometry('400x200')
+        self.settings_window.geometry('400x250')
+        self.settings_window.resizable(False, False) 
 
         self.notebook = ttk.Notebook(self.settings_window)
 

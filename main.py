@@ -77,7 +77,9 @@ class CNB(ttk.Notebook):
                 self.forget(index)
                 logging.info('removed tab')
             else:
-                pass
+                logging.info('event: quit')
+                self.forget(index)
+                sys.exit()
 
     def __initialize_custom_style(self):
         style = ttk.Style()
@@ -232,7 +234,22 @@ class ForeverPad:
 
     def load_plugins(self):
         plugins = {}
+        
+        ydk_file = os.path.join("plugins", "ydk.py")
+        if os.path.isfile(ydk_file):
+            logging.info(f"loading ydk.py: {ydk_file}")
+            spec = importlib.util.spec_from_file_location("ydk_module", ydk_file)
+            ydk_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(ydk_module)
+            plugins["ydk.py"] = ydk_module
+            logging.info(f"ydk.py loaded")
+
+        plugin_dir = os.path.abspath("plugins")
+        sys.path.insert(0, plugin_dir)
+
         for filename in os.listdir("plugins"):
+            if filename == "ydk.py":
+                continue
             if filename.endswith(".py"):
                 plugin_path = os.path.join("plugins", filename)
                 logging.info(f"loading plugin: {plugin_path}")
@@ -244,6 +261,8 @@ class ForeverPad:
                 plugins[filename] = plugin_module
 
                 logging.info(f"plugin {plugin_path} loaded")
+
+        sys.path.remove(plugin_dir)
 
         return plugins
 
@@ -260,13 +279,13 @@ class ForeverPad:
 
     def delete_tab(self):
         current_tab_index = self.tabs.index("current")
-        print(current_tab_index)
         if current_tab_index != 0:
             self.tabs.forget(current_tab_index)
             logging.info('removed tab')
         else:
-            logging.warning(self.translate[self.language]["crtab"])
-            messagebox.showwarning(self.translate[self.language]["warn"], self.translate[self.language]["crtab"])
+            logging.info('event: quit')
+            self.tabs.forget(current_tab_index)
+            self.exit_app()
 
     def refreshtab(self, event):
         logging.info('refreshed tab')
