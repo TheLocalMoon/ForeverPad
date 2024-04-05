@@ -1,40 +1,22 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from utils import *
 import requests
 import os
-import logging
+import pylog
 import json
 
 # logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
-
-values = {}
-def refresh_s():
-    global values
-    with open('settings.egg', 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line and ':' in line:
-                key, value = line.split(': ', 1)
-                values[key] = value
-refresh_s()
+logging = pylog.log()
 
 if values["DEBUG"] != "True":
     logging.disable(logging.INFO)
 
-logging.info('settings: loaded settings.egg')
-
 class PluginsMenu:
     def __init__(self, parent):
         self.parent = parent
-        # rip 5492429745 lines
-        if values["LANG"] == "English": self.language = "en"
-        elif values["LANG"] == "Czech": self.language = "cz"
-        elif values["LANG"] == "Russian": self.language = "ru"
-        else: self.language = "en"
-        logging.info('settings: loaded languages')
-        ######################
+        self.language = language_codes.get(values["LANG"], "en")
+        
         self.load_translations()
         self.ohio = tk.Toplevel(parent.settings_window)
         self.ohio.title(self.translate[self.language]["downloader"])

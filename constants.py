@@ -4,4 +4,4 @@ DEFAULT_FONT_TYPE = "Consolas"
 DEFAULT_THEME = "heaven"
 DEF_BOLD = False
 ENG = "English"
-DEF_DEBUG = True
+DEF_DEBUG = False

@@ -1,7 +1,7 @@
 import tkinter as tk
 import plugins_window as pw
 import json
-import logging
+import pylog
 import os
 from tkinter import ttk, messagebox
 from tkinter import font as fontus
@@ -9,8 +9,7 @@ from colorscheme import *
 from utils import *
 
 # logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
+logging = pylog.log()
 
 def refresh_s():
     global values
@@ -19,7 +18,7 @@ def refresh_s():
 refresh_s()
 
 if values["DEBUG"] != "True":
-    logging.disable(logging.INFO)
+    logging.disable()
 
 logging.info('settings: loaded settings.egg')
 
@@ -142,8 +141,8 @@ class SettingsWindow:
         else: valb=0 #no wae hazbin hotel reference
         self.debug_var = tk.IntVar(value=valb)
 
-        self.debug_entry = ttk.Checkbutton(self.other_tab, text=self.translate[self.language]["debug"], variable=self.debug_var, onvalue=1, offvalue=0)
-        self.debug_entry.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        #self.debug_entry = ttk.Checkbutton(self.other_tab, text=self.translate[self.language]["debug"], variable=self.debug_var, onvalue=1, offvalue=0)
+        #self.debug_entry.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
     def create_text_settings(self):
         self.font_size_label = ttk.Label(self.text_tab, text=self.translate[self.language]["fsize"])

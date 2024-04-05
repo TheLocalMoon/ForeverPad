@@ -4,7 +4,7 @@ import re
 import os
 import json
 import sys
-import logging
+import pylog
 import constants
 import importlib.util
 from tkinter import scrolledtext, filedialog, messagebox, Menu, ttk
@@ -27,12 +27,10 @@ DEBUG: {constants.DEF_DEBUG}""")
 from settings_window import SettingsWindow
 
 # logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s',
-                    level=logging.DEBUG, datefmt='%I:%M:%S')
+logging = pylog.log()
 
-if values["DEBUG"] != "True":
-    logging.disable(logging.INFO)
+if values["DEBUG"] == "False":
+    logging.disable()
 
 logging.info('loaded settings.egg')
 
