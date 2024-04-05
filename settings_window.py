@@ -1,10 +1,11 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from tkinter import font as fontus
 import plugins_window as pw
 import json
 import logging
 import os
+from tkinter import ttk, messagebox
+from tkinter import font as fontus
+from utils import *
 
 # logging
 logger = logging.getLogger(__name__)
@@ -24,14 +25,29 @@ logging.info('settings: loaded settings.egg')
 class SettingsWindow:
     def __init__(self, parent):
         self.parent = parent
+        self.colorschemes = sorted([
+            "desert",
+            "heaven",
+            "sky",
+            "forest",
+            "sunset",
+            "night",
+            "twilight",
+            "dusk",
+            "fire",
+            "earth",
+            "space",
+            "spring",
+            "hell"
+        ])
+        self.languages = sorted([
+            "English",
+            "Czech",
+            "Spanish",
+            "Russian"
+        ])
+        self.language = language_codes.get(values["LANG"], "en")
 
-        # rip 5492429745 lines
-        if values["LANG"] == "English": self.language = "en"
-        elif values["LANG"] == "Czech": self.language = "cz"
-        elif values["LANG"] == "Russian": self.language = "ru"
-        else: self.language = "en"
-        logging.info('settings: loaded languages')
-        ######################
         self.load_translations()
         self.settings_window = tk.Toplevel(parent.root)
         self.settings_window.title(self.translate[self.language]["settings"])
@@ -80,7 +96,7 @@ class SettingsWindow:
 
     def on_tab_changed(self, event):
         current_tab = self.notebook.select()
-        if current_tab == self.notebook.tabs()[2]:  # Index of the plugins tab
+        if current_tab == self.notebook.tabs()[2]:
             self.apply_button.pack_forget()
         else:
             self.apply_button.pack(pady=10)
@@ -128,7 +144,7 @@ class SettingsWindow:
         self.lang_label = ttk.Label(self.other_tab, text=self.translate[self.language]["lang"])
         self.lang_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-        self.lang_entry = ttk.Combobox(self.other_tab, textvariable=self.lang_var, values=["English","Czech","Russian"])
+        self.lang_entry = ttk.Combobox(self.other_tab, textvariable=self.lang_var, values=self.languages)
         self.lang_entry.grid(row=1, column=1, pady=10)
         logging.info('settings: event: create other settings')
 
@@ -171,8 +187,8 @@ class SettingsWindow:
     def create_window_settings(self):
         self.theme_label = ttk.Label(self.window_tab, text=self.translate[self.language]["theme"])
         self.theme_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-        self.theme_var = tk.StringVar(value=str(values["THEME"]))
-        self.theme_combobox = ttk.Combobox(self.window_tab, textvariable=self.theme_var, values=[self.translate[self.language]["light"], self.translate[self.language]["dark"]])
+        self.theme_var = tk.StringVar(value=str(values["COLORSCHEME"]))
+        self.theme_combobox = ttk.Combobox(self.window_tab, textvariable=self.theme_var, values=self.colorschemes)
         self.theme_combobox.grid(row=0, column=1, padx=10, pady=10)
         logging.info('settings: event: create window settings')
 
@@ -203,7 +219,7 @@ class SettingsWindow:
             file.write(f"""SETTING -
 FONT: {font_type}
 FONT_SIZE: {font_size}
-THEME: {theme}
+COLORSCHEME: {theme}
 BOLD: {bold}
 LANG: {language}
 DEBUG: {debug}""")

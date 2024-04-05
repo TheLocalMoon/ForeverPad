@@ -9,6 +9,8 @@ import constants
 import importlib.util
 from tkinter import scrolledtext, filedialog, messagebox, Menu, ttk
 from base64 import b64encode, b64decode
+from colorscheme import ColorSchemes
+from utils import *
 
 # default settings
 if not os.path.exists('settings.egg'):
@@ -16,7 +18,7 @@ if not os.path.exists('settings.egg'):
         file.write(f"""SETTING -
 FONT: {constants.DEFAULT_FONT_TYPE}
 FONT_SIZE: {constants.DEFAULT_FONT_SIZE}
-THEME: {constants.DEFAULT_THEME}
+COLORSCHEME: {constants.DEFAULT_THEME}
 BOLD: {constants.DEF_BOLD}
 LANG: {constants.ENG}
 DEBUG: {constants.DEF_DEBUG}""")
@@ -29,194 +31,16 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format='[%(asctime)s] [%(levelname)s]: %(message)s',
                     level=logging.DEBUG, datefmt='%I:%M:%S')
 
-def refresh_s():
-    global values
-    with open('settings.egg', 'r') as file:
-        values = {line.split(': ', 1)[0]: line.split(': ', 1)[1].strip() for line in file if ':' in line}
-refresh_s()
-
 if values["DEBUG"] != "True":
     logging.disable(logging.INFO)
 
 logging.info('loaded settings.egg')
 
-# https://stackoverflow.com/questions/39458337/is-there-a-way-to-add-close-buttons-to-tabs-in-tkinter-ttk-notebook/39459376#39459376
-class CNB(ttk.Notebook):
-    """A ttk Notebook with close buttons on each tab"""
-    __initialized = False
-
-    def __init__(self, *args, **kwargs):
-        if not self.__initialized:
-            self.__initialize_custom_style()
-            self.__inititialized = True
-
-        kwargs["style"] = "CNB"
-        ttk.Notebook.__init__(self, *args, **kwargs)
-
-        self._active = None
-
-        self.bind("<ButtonPress-1>", self.on_close_press, True)
-        self.bind("<ButtonRelease-1>", self.on_close_release)
-
-    def on_close_press(self, event):
-        """Called when the button is pressed over the close button"""
-
-        element = self.identify(event.x, event.y)
-
-        if "close" in element:
-            index = self.index("@%d,%d" % (event.x, event.y))
-            self.state(['pressed'])
-            self._active = index
-            return "break"
-
-    def on_close_release(self, event):
-        """Called when the button is released"""
-        if not self.instate(['pressed']):
-            return
-
-        element =  self.identify(event.x, event.y)
-        if "close" not in element:
-            # user moved the mouse off of the close button
-            return
-
-        index = self.index("@%d,%d" % (event.x, event.y))
-
-        if self._active == index:
-            if index != 0:
-                self.forget(index)
-                logging.info('removed tab')
-            else:
-                logging.info('event: quit')
-                self.forget(index)
-                sys.exit()
-
-    def __initialize_custom_style(self):
-        style = ttk.Style()
-        self.images = (
-            tk.PhotoImage("img_close", data='''
-                R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-                '''),
-            tk.PhotoImage("img_closeactive", data='''
-                R0lGODlhCAAIAMIEAAAAAP/SAP/bNNnZ2cbGxsbGxsbGxsbGxiH5BAEKAAQALAAA
-                AAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU5kEJADs=
-                '''),
-            tk.PhotoImage("img_closepressed", data='''
-                R0lGODlhCAAIAMIEAAAAAOUqKv9mZtnZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-            ''')
-        )
-
-        style.element_create("close", "image", "img_close",
-                            ("active", "pressed", "!disabled", "img_closepressed"),
-                            ("active", "!disabled", "img_closeactive"), border=8, sticky='')
-        style.layout("CNB", [("CNB.client", {"sticky": "nswe"})])
-        style.layout("CNB.Tab", [
-            ("CNB.tab", {
-                "sticky": "nswe",
-                "children": [
-                    ("CNB.padding", {
-                        "side": "top",
-                        "sticky": "nswe",
-                        "children": [
-                            ("CNB.focus", {
-                                "side": "top",
-                                "sticky": "nswe",
-                                "children": [
-                                    ("CNB.label", {"side": "left", "sticky": ''}),
-                                    ("CNB.close", {"side": "left", "sticky": ''}),
-                                ]
-                        })
-                    ]
-                })
-            ]
-        })
-    ])
-
-class Tab:
-    def __init__(self, parent, file_path=None, content="", name=""):
-        refresh_s()
-        logging.info('reloaded settings.egg')
-        self.parent = parent
-        self.file_path = file_path
-        if values["BOLD"] == "True":
-            bold = "bold"
-        else:
-            bold = "normal"
-        self.text_area = scrolledtext.ScrolledText(parent,
-                                                   wrap=tk.WORD,
-                                                   width=50,
-                                                   height=25,
-                                                   font=(str(values['FONT']), int(values['FONT_SIZE']), bold))
-        self.text_area.pack(expand=True, fill='both')
-        self.text_area.insert(tk.END, content)
-        self.tab = self.text_area
-        logging.info('created tab')
-
-class SearchReplaceWindow:
-    def __init__(self, parent, text_widget):
-        self.parent = parent
-        self.text_widget = text_widget
-
-        self.window = tk.Toplevel(parent)
-        self.window.title("Search/Replace")
-        self.window.geometry("265x130")
-        self.window.resizable(False,False)
-
-        self.search_label = tk.Label(self.window, text="Search:")
-        self.search_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-        self.search_entry = tk.Entry(self.window, width=20)
-        self.search_entry.grid(row=0, column=1, padx=5, pady=5)
-
-        self.replace_label = tk.Label(self.window, text="Replace:")
-        self.replace_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        self.replace_entry = tk.Entry(self.window, width=20)
-        self.replace_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        self.search_button = tk.Button(self.window, text="Search", command=self.search_text)
-        self.search_button.grid(row=100, column=100, padx=14, pady=5, sticky="se")
-        self.replace_button = tk.Button(self.window, text="Replace", command=self.replace_text)
-        self.replace_button.grid(row=99, column=100, padx=14, pady=5, sticky="se")
-
-    def search_text(self):
-        self.window.bell()
-        search_text = self.search_entry.get()
-        if search_text:
-            start_pos = self.text_widget.search(search_text, "1.0", tk.END)
-            if start_pos:
-                end_pos = f"{start_pos}+{len(search_text)}c"
-                self.text_widget.tag_remove("search", "1.0", tk.END)
-                self.text_widget.tag_add("search", start_pos, end_pos)
-                self.text_widget.mark_set(tk.INSERT, start_pos)
-                self.text_widget.tag_config('search', foreground='red')
-                self.text_widget.see(start_pos)
-                self.text_widget.focus_set()
-            else: messagebox.showwarning("Warning","No specific text found")
-
-    def replace_text(self):
-        self.window.bell()
-        self.text_widget.tag_config('search', foreground='white')
-        search_text = self.search_entry.get()
-        replace_text = self.replace_entry.get()
-        if search_text and replace_text:
-            start_pos = self.text_widget.search(search_text, "1.0", tk.END)
-            if start_pos:
-                end_pos = f"{start_pos}+{len(search_text)}c"
-                self.text_widget.delete(start_pos, end_pos)
-                self.text_widget.insert(start_pos, replace_text)
-        else: messagebox.showwarning("Warning","No specific text found")
-
 class ForeverPad:
     def __init__(self, root):
         self.root = root
-        # rip 5492429745 lines
-        if values["LANG"] == "English": self.language = "en"
-        elif values["LANG"] == "Czech": self.language = "cz"
-        elif values["LANG"] == "Russian": self.language = "ru"
-        else: self.language = "en"
-        ######################
+        self.language = language_codes.get(values["LANG"], "en")
+
         self.load_translations()
         self.root.title("ForeverPad")
         self.root.geometry('800x450')
@@ -470,40 +294,29 @@ class ForeverPad:
 
     def toggle_theme(self):
         logging.info('toggled theme')
-        if values['THEME'] == 'Dark':
-            self.change_theme(dark=True)
-        else:
-            self.change_theme(dark=False)
+        self.change_theme(values['COLORSCHEME'])
 
-    def change_theme(self, dark=False):
-        if dark:
-            self.root.config(bg='#3f3f3f')
-            self.tab.config(bg='#3f3f3f', fg='white')
-            self.status_bar.config(bg='#202020', fg='white')
-            self.line_label.config(bg='#202020', fg='white')
-        else:
-            self.root.config(bg='white')
-            self.tab.config(bg='white', fg='black')
-            self.status_bar.config(bg='white', fg='black')
-            self.line_label.config(bg='white', fg='black')
+    def change_theme(self, theme="desert"):
+        colors = getattr(ColorSchemes, theme.upper(), None)
+        self.root.config(bg=colors['root_bg'])
+        self.tab.config(bg=colors['tab_bg'], fg=colors['tab_fg'])
+        self.status_bar.config(bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
+        self.line_label.config(bg=colors['line_label_bg'], fg=colors['line_label_fg'])
 
     def open_settings(self):
         SettingsWindow(self)
 
-    def apply_settings(self, font_size, font_type, theme, bold=str):
+    def apply_settings(self, font_size, font_type, colorscheme, bold=str):
         logging.info('applied settings')
         self.font_size = font_size
         self.font_type = font_type
-        self.theme = theme
+        self.colorscheme = colorscheme
         self.bold = bold
         if self.bold == "True": self.bold = "bold"
         else: self.bold = "normal"
 
         self.tab.config(font=(self.font_type, self.font_size, self.bold))
-        if self.theme == "Dark":
-            self.change_theme(dark=True)
-        else:
-            self.change_theme(dark=False)
+        self.change_theme(colorscheme)
 
     def update_font_size(self, event=None):
         logging.warning('there was supposed to be albert enstein mathematics but i removed it cuz broken')
@@ -531,13 +344,24 @@ class ForeverPad:
             line, col = cursor_pos.split('.')
             length = len(self.tab.get("1.0", "end-1c"))
             chairs = self.tab.index("end-1c")
-            self.line_label.config(text=f"{self.translate[self.language]["length"]}.: {length}  {self.translate[self.language]["lines"]}.: {chairs.split('.')[0]}  | {self.translate[self.language]["col"]}.: {col}  {self.translate[self.language]["lpos"]}.: {length+1}")
+            length_text = f"{self.translate[self.language]['length']}.: {length}"
+            lines_text = f"{self.translate[self.language]['lines']}.: {chairs.split('.')[0]}"
+            col_text = f"{self.translate[self.language]['col']}.: {col}"
+            lpos_text = f"{self.translate[self.language]['lpos']}.: {length+1}"
+
+            self.line_label.config(text=f"{length_text}  {lines_text}  | {col_text}  {lpos_text}")            
 
     def create_status_bar(self):
         logging.info('created status bar')
         self.status_bar = tk.Label(self.tab, bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
-        self.line_label = tk.Label(self.status_bar, text=f"{self.translate[self.language]["length"]}.: 1  {self.translate[self.language]["lines"]}.: 1   |  {self.translate[self.language]["col"]}.: 1  {self.translate[self.language]["lpos"]}.: 1  {self.translate[self.language]["lpos"]}.: 1")
+        length_text = f"{self.translate[self.language]['length']}.: 1"
+        lines_text = f"{self.translate[self.language]['lines']}.: 1"
+        col_text = f"{self.translate[self.language]['col']}.: 1"
+        lpos_text = f"{self.translate[self.language]['lpos']}.: 1"
+
+        self.line_label = tk.Label(self.status_bar, text=f"{length_text}  {lines_text}  | {col_text}  {lpos_text}  {lpos_text}")
+        
         self.line_label.pack(side=tk.LEFT, padx=(2, 0))
         self.update_indicators()
         self.toggle_theme()

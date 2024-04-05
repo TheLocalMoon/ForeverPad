@@ -3,37 +3,20 @@
 # ForeverPad
 *"Better than Notepad++!"*
 
-ForeverPad is a simple text editor built with Python's Tkinter library. It offers basic text editing features along with some handy tools like encoding/decoding text and internationalization support.
+ForeverPad is the best ever Python text editor. Seriously, what did you expect? Tabbed interface, plugin supports, color schemes and more!
 
-
-## Key Features:
-
-- **Tabbed Interface:** Work on multiple documents simultaneously with the tabbed interface.
-
-- **Customizable Settings:** Customize font, theme, and other preferences easily.
-
-- **Context Menus:** Right-click for options like cut, copy, paste, and more.
-
-- **Status Bar:** Get document info like length, number of lines, and cursor position.
-
-- **Plugin Support:** Extend the functionality with Python plugin support!
-
-## Language list
+## Complete Language List™
 | Language   | Status         |
 |------------|----------------|
-| English    | Translated     |
-| Czech      | Translated     |
-| Russian    | Translated     |
-| Spanish    | Needs Translator |
-| French     | Needs Translator |
-| German     | Needs Translator |
-| Chinese    | Needs Translator |
-| Japanese   | Needs Translator |
-| Korean     | Needs Translator |
-
-## Stuff i used so i wouldnt get copyright claimed
-
-[ChatGPT](https://chat.openai.com/)
+| English    | Done     |
+| Czech      | Done     |
+| Russian    | Done     |
+| Spanish    | Done |
+| French     | ~~Done~~ |
+| German     | ~~Done~~ |
+| Chinese    | ~~Done~~ |
+| Japanese   | ~~Done~~ |
+| Korean     | ~~Done~~ |
 
 ----------------------------------------
 
