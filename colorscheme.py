@@ -1,5 +1,6 @@
 # colorscheme.py #
 # color schemes for ForeverPad
+import os, json
 
 def get_color_scheme(bg, tab_bg, tab_fg, status_bar_bg, status_bar_fg, line_label_bg, line_label_fg):
     return {
@@ -56,3 +57,17 @@ class ColorSchemes:
     IVORY = get_color_scheme('#FFFFF0', '#FFFFF0', 'black', '#FFFFF0', 'black', '#FFFFF0', 'black')
     CYCLAMEN = get_color_scheme('#FF43A4', '#FF43A4', 'black', '#FF43A4', 'black', '#FF43A4', 'black')
     OLIVE = get_color_scheme('#808000', '#808000', 'black', '#808000', 'black', '#808000', 'black')
+
+    @staticmethod
+    def load():
+        for filename in os.listdir("colorschemes/"):
+            if filename.endswith('.json'):
+                variable_name = os.path.splitext(filename)[0].upper()
+                with open(os.path.join("colorschemes/", filename), 'r') as file:
+                    json_data = json.load(file)
+                colors = tuple(json_data.values())
+                setattr(ColorSchemes, variable_name, get_color_scheme(*colors))
+
+
+ColorSchemes.load()
+delattr(ColorSchemes, 'load') # I HAVE THE POWER

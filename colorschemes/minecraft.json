@@ -1,0 +1,9 @@
+{
+    "root_bg": "#6b4a20",
+    "tab_bg": "#6b4a20",
+    "tab_fg": "white",
+    "status_bar_bg": "#4e3318",
+    "status_bar_fg": "white",
+    "line_label_bg": "#4e3318",
+    "line_label_fg": "white"
+}
