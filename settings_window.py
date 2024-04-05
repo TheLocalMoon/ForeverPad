@@ -5,6 +5,7 @@ import logging
 import os
 from tkinter import ttk, messagebox
 from tkinter import font as fontus
+from colorscheme import *
 from utils import *
 
 # logging
@@ -26,19 +27,7 @@ class SettingsWindow:
     def __init__(self, parent):
         self.parent = parent
         self.colorschemes = sorted([
-            "desert",
-            "heaven",
-            "sky",
-            "forest",
-            "sunset",
-            "night",
-            "twilight",
-            "dusk",
-            "fire",
-            "earth",
-            "space",
-            "spring",
-            "hell"
+            scheme.lower() for scheme in dir(ColorSchemes) if not scheme.startswith("__")
         ])
         self.languages = sorted([
             "English",

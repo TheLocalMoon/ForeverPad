@@ -97,7 +97,7 @@ class PluginsMenu:
                 if file_info["name"].endswith(".py"):
                     self.plugins_listbox.insert(tk.END, file_info["name"])
         except Exception as e:
-            messagebox.showerror(self.translate[self.language]["error"], f"{self.translate[self.language]["failedpkg"]}: {e}")
+            messagebox.showerror(self.translate[self.language]["error"], f"{self.translate[self.language]['failedpkg']}: {e}")
 
     def download_plugin(self):
         selected_index = self.plugins_listbox.curselection()
@@ -117,6 +117,6 @@ class PluginsMenu:
             with open(os.path.join(plugins_dir, selected_plugin), "wb") as f:
                 f.write(response.content)
 
-            messagebox.showinfo(self.translate[self.language]["gg"], f"{self.translate[self.language]["plugin"]} '{selected_plugin}' {self.translate[self.language]["downsucc"]}.")
+            messagebox.showinfo(self.translate[self.language]["gg"], f"{self.translate[self.language]['plugin']} '{selected_plugin}' {self.translate[self.language]['downsucc']}.")
         except Exception as e:
-            messagebox.showerror(self.translate[self.language]["error"], f"{self.translate[self.language]["failpkg"]} '{selected_plugin}': {e}")
+            messagebox.showerror(self.translate[self.language]["error"], f"{self.translate[self.language]['failpkg']} '{selected_plugin}': {e}")

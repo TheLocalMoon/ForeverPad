@@ -1,4 +1,4 @@
-# main.py #
+# main.py
 import tkinter as tk
 import re
 import os
@@ -45,7 +45,7 @@ class ForeverPad:
         self.root.title("ForeverPad")
         self.root.geometry('800x450')
         self.root.iconbitmap("icon.ico")
-        #self.root.resizable(False, False) 
+        #self.root.resizable(False, False)
 
         # theme stuff
         self.style = ttk.Style()
@@ -114,7 +114,7 @@ class ForeverPad:
 
         self.statusos = self.create_status_bar()
         self.toggle_theme()
-        
+
         logging.info('created window')
 
         self.load_plugins()
@@ -124,7 +124,7 @@ class ForeverPad:
 
     def load_plugins(self):
         plugins = {}
-        
+
         ydk_file = os.path.join("plugins", "ydk.py")
         if os.path.isfile(ydk_file):
             logging.info(f"loading ydk.py: {ydk_file}")
@@ -191,14 +191,14 @@ class ForeverPad:
                 self.tab = child
                 self.toggle_status_bar()
                 break
-        
+
     def add_tab(self, file_path=None, content="", name=None):
         if name != None:
             tab = Tab(self.tabs, file_path, content, name=name)
             self.tabs.add(tab.text_area, text=name)
         else:
             tab = Tab(self.tabs, file_path, content, name=None)
-            self.tabs.add(tab.text_area, text=f"{self.translate[self.language]["untitled"]} {self.tabcount}")
+            self.tabs.add(tab.text_area, text=f"{self.translate[self.language]['untitled']} {self.tabcount}")
         self.tabs.select(len(self.tabs.tabs()) - 1)
         self.tab = tab.text_area
 
@@ -298,10 +298,13 @@ class ForeverPad:
 
     def change_theme(self, theme="desert"):
         colors = getattr(ColorSchemes, theme.upper(), None)
-        self.root.config(bg=colors['root_bg'])
-        self.tab.config(bg=colors['tab_bg'], fg=colors['tab_fg'])
-        self.status_bar.config(bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
-        self.line_label.config(bg=colors['line_label_bg'], fg=colors['line_label_fg'])
+        if colors is None:
+            print(f"Theme '{theme}' not found in ColorSchemes.")
+        else:
+            self.root.config(bg=colors['root_bg'])
+            self.tab.config(bg=colors['tab_bg'], fg=colors['tab_fg'])
+            self.status_bar.config(bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
+            self.line_label.config(bg=colors['line_label_bg'], fg=colors['line_label_fg'])
 
     def open_settings(self):
         SettingsWindow(self)
@@ -312,15 +315,17 @@ class ForeverPad:
         self.font_type = font_type
         self.colorscheme = colorscheme
         self.bold = bold
-        if self.bold == "True": self.bold = "bold"
-        else: self.bold = "normal"
+        if self.bold == "True":
+            self.bold = "bold"
+        else:
+            self.bold = "normal"
 
         self.tab.config(font=(self.font_type, self.font_size, self.bold))
         self.change_theme(colorscheme)
 
     def update_font_size(self, event=None):
         logging.warning('there was supposed to be albert enstein mathematics but i removed it cuz broken')
-        messagebox.showwarning(self.translate[self.language]["warn"],self.translate[self.language]["seterror"])
+        messagebox.showwarning(self.translate[self.language]["warn"], self.translate[self.language]["seterror"])
 
     def delete_word(self, event=None):
         logging.info('event: removed word')
@@ -361,7 +366,7 @@ class ForeverPad:
         lpos_text = f"{self.translate[self.language]['lpos']}.: 1"
 
         self.line_label = tk.Label(self.status_bar, text=f"{length_text}  {lines_text}  | {col_text}  {lpos_text}  {lpos_text}")
-        
+
         self.line_label.pack(side=tk.LEFT, padx=(2, 0))
         self.update_indicators()
         self.toggle_theme()
@@ -369,7 +374,7 @@ class ForeverPad:
 
     def open_file(self):
         logging.info('event: open file')
-        file_path = filedialog.askopenfilename(filetypes=[({self.translate[self.language]["tfile"]}, "*.txt"), ({self.translate[self.language]["afile"]}, "*.*")])
+        file_path = filedialog.askopenfilename(filetypes=[(self.translate[self.language]["tfile"], "*.txt"), (self.translate[self.language]["afile"], "*.*")])
         if file_path:
             with open(file_path, "r") as file:
                 content = file.read()
