@@ -37,6 +37,8 @@ logging.info('loaded settings.egg')
 
 class ForeverPad:
     def __init__(self, root):
+        super().__init__()
+
         self.root = root
         self.language = language_codes.get(values["LANG"], "en")
 
@@ -44,6 +46,7 @@ class ForeverPad:
         self.root.title("ForeverPad")
         self.root.geometry('800x450')
         self.root.iconbitmap("icon.ico")
+        #self.root.overrideredirect(True)
         #self.root.resizable(False, False)
 
         # theme stuff
@@ -60,10 +63,12 @@ class ForeverPad:
         self.font_size = int(values['FONT_SIZE'])
         self.font_type = values['FONT']
 
-        self.menu_bar = Menu(self.root)
+        colors = getattr(ColorSchemes, values['COLORSCHEME'].upper(), None)
+
+        self.menu_bar = Menu(self.root, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.root.config(menu=self.menu_bar)
 
-        self.file_menu = Menu(self.menu_bar, tearoff=0)
+        self.file_menu = Menu(self.menu_bar, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.file_menu.add_command(label=self.translate[self.language]["new"], command=self.add_tab)
         self.file_menu.add_command(label=self.translate[self.language]["open"], command=self.open_file)
         self.file_menu.add_command(label=self.translate[self.language]["save"], command=self.save_file)
@@ -72,30 +77,30 @@ class ForeverPad:
         self.file_menu.add_command(label=self.translate[self.language]["exit"], command=self.exit_app)
         self.menu_bar.add_cascade(label=self.translate[self.language]["file"], menu=self.file_menu)
 
-        self.edit_menu = Menu(self.menu_bar, tearoff=0)
+        self.edit_menu = Menu(self.menu_bar, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.edit_menu.add_command(label=self.translate[self.language]["cut"], command=self.cut)
         self.edit_menu.add_command(label=self.translate[self.language]["copy"], command=self.copy)
         self.edit_menu.add_command(label=self.translate[self.language]["paste"], command=self.paste)
         self.menu_bar.add_cascade(label=self.translate[self.language]["edit"], menu=self.edit_menu)
 
-        self.view_menu = Menu(self.menu_bar, tearoff=0)
+        self.view_menu = Menu(self.menu_bar, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.status_bar_visible = True
         self.view_menu.add_command(label=self.translate[self.language]["tsbar"], command=self.toggle_status_bar)
         self.menu_bar.add_cascade(label=self.translate[self.language]["view"], menu=self.view_menu)
 
-        self.help_menu = Menu(self.menu_bar, tearoff=0)
+        self.help_menu = Menu(self.menu_bar, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.help_menu.add_command(label=self.translate[self.language]["about"], command=self.show_about)
         self.help_menu.add_command(label=self.translate[self.language]["settings"], command=self.open_settings)
         self.menu_bar.add_cascade(label="···", menu=self.help_menu)
 
         self.root.protocol("WM_DELETE_WINDOW", self.exit_app)
 
-        self.context_menu = Menu(self.root, tearoff=0)
+        self.context_menu = Menu(self.root, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.context_menu.add_command(label=self.translate[self.language]["cut"], command=self.cut)
         self.context_menu.add_command(label=self.translate[self.language]["copy"], command=self.copy)
         self.context_menu.add_command(label=self.translate[self.language]["paste"], command=self.paste)
 
-        self.manipulation_menu = Menu(self.context_menu, tearoff=0)
+        self.manipulation_menu = Menu(self.context_menu, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.manipulation_menu.add_command(label=self.translate[self.language]["upper"], command=self.uppercase)
         self.manipulation_menu.add_command(label=self.translate[self.language]["lower"], command=self.lowercase)
         self.manipulation_menu.add_command(label=self.translate[self.language]["title"], command=self.titlecase)
@@ -105,7 +110,7 @@ class ForeverPad:
         self.manipulation_menu.add_command(label=self.translate[self.language]["bin"], command=self.binary)
         self.context_menu.add_cascade(label=self.translate[self.language]["mani"], menu=self.manipulation_menu)
 
-        self.tab_context_menu = Menu(self.root, tearoff=0)
+        self.tab_context_menu = Menu(self.root, tearoff=0, bg=colors['status_bar_bg'], fg=colors['status_bar_fg'])
         self.tab_context_menu.add_command(label=self.translate[self.language]["del"], command=self.delete_tab)
 
         self.root.pack_propagate(False)
@@ -298,7 +303,7 @@ class ForeverPad:
     def change_theme(self, theme="desert"):
         colors = getattr(ColorSchemes, theme.upper(), None)
         if colors is None:
-            print(f"Theme '{theme}' not found in ColorSchemes.")
+            logging.error(f"theme '{theme}' not found in color schemes")
         else:
             self.root.config(bg=colors['root_bg'])
             self.tab.config(bg=colors['tab_bg'], fg=colors['tab_fg'])

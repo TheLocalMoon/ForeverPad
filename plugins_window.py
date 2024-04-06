@@ -1,12 +1,13 @@
 # plugins_window.py #
 # the name explains itself
 import tkinter as tk
-from tkinter import ttk, messagebox
-from utils import *
 import requests
 import os
 import pylog
 import json
+from tkinter import ttk, messagebox
+from colorscheme import ColorSchemes
+from utils import *
 
 # logging
 logging = pylog.log()
@@ -20,14 +21,14 @@ class PluginsMenu:
         self.language = language_codes.get(values["LANG"], "en")
         
         self.load_translations()
-        self.ohio = tk.Toplevel(parent.settings_window)
-        self.ohio.title(self.translate[self.language]["downloader"])
-        self.ohio.geometry('400x300')
+        self.plugins_window = tk.Toplevel(parent.settings_window)
+        self.plugins_window.title(self.translate[self.language]["downloader"])
+        self.plugins_window.geometry('400x300')
 
-        self.main_frame = ttk.Frame(self.ohio)
+        self.main_frame = tk.Frame(self.plugins_window)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.plugins_frame = tk.Frame(self.ohio)
+        self.plugins_frame = tk.Frame(self.plugins_window)
         self.plugins_frame.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
 
         self.plugins_listbox = tk.Listbox(self.plugins_frame, selectmode=tk.SINGLE)
@@ -44,8 +45,20 @@ class PluginsMenu:
 
         self.plugins_listbox.bind("<<ListboxSelect>>", self.callback)
 
+        self.change_theme()
         self.refresh_plugins_list()
         self.get_plugin_data()
+
+    def change_theme(self):
+        self.colors = getattr(ColorSchemes, values['COLORSCHEME'].upper(), None)
+        if self.colors is None:
+            return 'theme not found'
+        
+        self.main_frame.config(bg=self.colors['root_bg'])
+        self.plugins_window.config(bg=self.colors['root_bg'])
+        self.plugins_listbox.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.plugin_name_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.plugin_description_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
 
     def get_plugin_data(self):
         url = "https://raw.githubusercontent.com/TheLocalMoon/ForeverPlugins/main/plugins/data.json"

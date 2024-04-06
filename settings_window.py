@@ -44,6 +44,10 @@ class SettingsWindow:
         self.settings_window.geometry('400x250')
         self.settings_window.resizable(False, False) 
 
+        self.colors = getattr(ColorSchemes, values['COLORSCHEME'].upper(), None)
+        if self.colors is None:
+            return 'theme not found'
+
         self.notebook = ttk.Notebook(self.settings_window)
 
         self.text_tab = tk.Frame(self.notebook)
@@ -63,11 +67,25 @@ class SettingsWindow:
         self.create_plugins_settings()
         self.create_other_settings()
 
-        self.apply_button = ttk.Button(self.settings_window, text=self.translate[self.language]["apply"], command=self.apply_settings)
+        self.apply_button = tk.Button(self.settings_window, text=self.translate[self.language]["apply"], command=self.apply_settings)
         self.apply_button.pack(pady=10)
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
-        
+        self.change_theme()
+
         logging.info('settings: created window')
+
+    def change_theme(self):
+        self.settings_window.config(bg=self.colors['root_bg'])
+        self.text_tab.config(bg=self.colors['root_bg'])
+        self.window_tab.config(bg=self.colors['root_bg'])
+        self.plugins_tab.config(bg=self.colors['root_bg'])
+        self.other_tab.config(bg=self.colors['root_bg'])
+        self.lang_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.plugins_list.config(bg=self.colors['tab_bg'], fg=self.colors['tab_fg'])
+        self.theme_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.font_size_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.font_type_label.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
+        self.bold_entry.config(bg=self.colors['root_bg'], fg=self.colors['tab_fg'])
 
     def create_plugins_settings(self):
         self.plugins_frame = tk.Frame(self.plugins_tab)
@@ -78,10 +96,10 @@ class SettingsWindow:
 
         self.refresh_plugins_list()
 
-        remove_button = ttk.Button(self.plugins_tab, text="Remove Plugin", command=self.remove_plugin)
+        remove_button = tk.Button(self.plugins_tab, text="Remove Plugin", command=self.remove_plugin)
         remove_button.pack(side=tk.TOP, anchor=tk.NE)
         
-        pow_haha = ttk.Button(self.plugins_tab, text="Plugin Downloader", command=self.hax)
+        pow_haha = tk.Button(self.plugins_tab, text="Plugin Downloader", command=self.hax)
         pow_haha.pack(side=tk.BOTTOM, anchor=tk.SE)
 
     def on_tab_changed(self, event):
@@ -131,7 +149,7 @@ class SettingsWindow:
         self.lang_var = tk.StringVar(self.other_tab)
         self.lang_var.set(values["LANG"])
 
-        self.lang_label = ttk.Label(self.other_tab, text=self.translate[self.language]["lang"])
+        self.lang_label = tk.Label(self.other_tab, text=self.translate[self.language]["lang"])
         self.lang_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         self.lang_entry = ttk.Combobox(self.other_tab, textvariable=self.lang_var, values=self.languages)
@@ -143,17 +161,17 @@ class SettingsWindow:
         else: valb=0 #no wae hazbin hotel reference
         self.debug_var = tk.IntVar(value=valb)
 
-        #self.debug_entry = ttk.Checkbutton(self.other_tab, text=self.translate[self.language]["debug"], variable=self.debug_var, onvalue=1, offvalue=0)
+        #self.debug_entry = tk.Checkbutton(self.other_tab, text=self.translate[self.language]["debug"], variable=self.debug_var, onvalue=1, offvalue=0)
         #self.debug_entry.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
     def create_text_settings(self):
-        self.font_size_label = ttk.Label(self.text_tab, text=self.translate[self.language]["fsize"])
+        self.font_size_label = tk.Label(self.text_tab, text=self.translate[self.language]["fsize"])
         self.font_size_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.font_size_var = tk.StringVar(value=values["FONT_SIZE"])
-        self.font_size_entry = ttk.Entry(self.text_tab, textvariable=self.font_size_var)
+        self.font_size_entry = tk.Entry(self.text_tab, textvariable=self.font_size_var)
         self.font_size_entry.grid(row=0, column=1, padx=10, pady=10)
 
-        self.font_type_label = ttk.Label(self.text_tab, text=self.translate[self.language]["font"])
+        self.font_type_label = tk.Label(self.text_tab, text=self.translate[self.language]["font"])
         self.font_type_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         
         available_fonts = fontus.families()
@@ -169,13 +187,13 @@ class SettingsWindow:
         else: valb=0 #no wae hazbin hotel reference
         self.bold_var = tk.IntVar(value=valb)
 
-        self.bold_entry = ttk.Checkbutton(self.text_tab, text=self.translate[self.language]["bold"], variable=self.bold_var, onvalue=1, offvalue=0)
+        self.bold_entry = tk.Checkbutton(self.text_tab, text=self.translate[self.language]["bold"], variable=self.bold_var, onvalue=1, offvalue=0)
         self.bold_entry.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
         logging.info('settings: event: create text settings')
 
     def create_window_settings(self):
-        self.theme_label = ttk.Label(self.window_tab, text=self.translate[self.language]["theme"])
+        self.theme_label = tk.Label(self.window_tab, text=self.translate[self.language]["theme"])
         self.theme_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.theme_var = tk.StringVar(value=str(values["COLORSCHEME"]))
         self.theme_combobox = ttk.Combobox(self.window_tab, textvariable=self.theme_var, values=self.colorschemes)
@@ -199,7 +217,7 @@ class SettingsWindow:
         else:
             debug = "True"
 
-        if language != values["LANG"] or debug != values["DEBUG"]:
+        if language != values["LANG"] or debug != values["DEBUG"] or theme != values["COLORSCHEME"]:
             willrest = True
             messagebox.showwarning(self.translate[self.language]["warn"],self.translate[self.language]["langchang"])
         else:
