@@ -11,7 +11,11 @@ import constants
 # logging
 logging = pylog.log()
 
-# default settings
+# default files/directories
+if not os.path.exists("plugins"):
+    os.makedirs("plugins")
+    logging.info('created plugins/ directory')
+
 if not os.path.exists('settings.egg'):
     with open('settings.egg', 'w') as file:
         file.write(f"""SETTING -
@@ -21,7 +25,7 @@ COLORSCHEME: {constants.DEFAULT_THEME}
 BOLD: {constants.DEF_BOLD}
 LANG: {constants.ENG}
 DEBUG: {constants.DEF_DEBUG}""")
-    logging.info('Created settings.egg')
+    logging.info('created settings.egg')
 
 language_codes = {
     "English": "en",
