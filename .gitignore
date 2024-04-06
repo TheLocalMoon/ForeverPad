@@ -230,3 +230,4 @@ fabric.properties
 #commit_to_github.bat
 settings.egg
 .vs/
+/output
