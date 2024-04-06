@@ -6,24 +6,11 @@ import os
 import json
 import sys
 import pylog
-import constants
 import importlib.util
 from tkinter import scrolledtext, filedialog, messagebox, Menu, ttk
 from base64 import b64encode, b64decode
-from colorscheme import ColorSchemes
 from utils import *
-
-# default settings
-if not os.path.exists('settings.egg'):
-    with open('settings.egg', 'w') as file:
-        file.write(f"""SETTING -
-FONT: {constants.DEFAULT_FONT_TYPE}
-FONT_SIZE: {constants.DEFAULT_FONT_SIZE}
-COLORSCHEME: {constants.DEFAULT_THEME}
-BOLD: {constants.DEF_BOLD}
-LANG: {constants.ENG}
-DEBUG: {constants.DEF_DEBUG}""")
-    logging.info('Created settings.egg')
+from colorscheme import ColorSchemes
 
 from settings_window import SettingsWindow
 
