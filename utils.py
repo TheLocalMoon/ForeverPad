@@ -10,7 +10,8 @@ language_codes = {
     "English": "en",
     "Czech": "cz",
     "Russian": "ru",
-    "Spanish": "es"
+    "Spanish": "es",
+    "Deutsch": "de"
 }
 
 def refresh_s():
@@ -24,6 +25,8 @@ class CNB(ttk.Notebook):
     __initialized = False
 
     def __init__(self, *args, **kwargs):
+        super().__init__()
+
         if not self.__initialized:
             self.__initialize_custom_style()
             self.__initialized = True
@@ -115,6 +118,8 @@ class CNB(ttk.Notebook):
 
 class Tab:
     def __init__(self, parent, file_path=None, content="", name=""):
+        super().__init__()
+
         refresh_s()
         logging.info('reloaded settings.egg')
         self.parent = parent
@@ -135,6 +140,8 @@ class Tab:
 
 class SearchReplaceWindow:
     def __init__(self, parent, text_widget):
+        super().__init__()
+
         self.language = language_codes.get(values["LANG"], "en")
         self.load_translations()
 

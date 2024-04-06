@@ -17,6 +17,8 @@ if values["DEBUG"] != "True":
 
 class PluginsMenu:
     def __init__(self, parent):
+        super().__init__()
+        
         self.parent = parent
         self.language = language_codes.get(values["LANG"], "en")
         

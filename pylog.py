@@ -4,7 +4,7 @@ from datetime import datetime
 
 class log:
     def __init__(self):
-        #super().__init__()
+        super().__init__()
         self.on = True
 
         print(f"[{datetime.now()}] [READY] PyLOG ready")

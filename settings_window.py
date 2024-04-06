@@ -26,6 +26,8 @@ logging.info('settings: loaded settings.egg')
 
 class SettingsWindow:
     def __init__(self, parent):
+        super().__init__()
+
         self.parent = parent
         self.colorschemes = sorted([
             scheme.lower() for scheme in dir(ColorSchemes) if not scheme.startswith("__")
@@ -34,7 +36,8 @@ class SettingsWindow:
             "English",
             "Czech",
             "Spanish",
-            "Russian"
+            "Russian",
+            "Deutsch"
         ])
         self.language = language_codes.get(values["LANG"], "en")
 
@@ -219,7 +222,7 @@ class SettingsWindow:
 
         if language != values["LANG"] or debug != values["DEBUG"] or theme != values["COLORSCHEME"]:
             willrest = True
-            messagebox.showwarning(self.translate[self.language]["warn"],self.translate[self.language]["langchang"])
+            messagebox.showwarning(self.translate[self.language]["warn"],self.translate[self.language]["settchang"])
         else:
             willrest = False
 

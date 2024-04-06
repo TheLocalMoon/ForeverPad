@@ -114,7 +114,11 @@ class ForeverPad:
         self.tab_context_menu.add_command(label=self.translate[self.language]["del"], command=self.delete_tab)
 
         self.root.pack_propagate(False)
+        self.tab.bind("<Control-s>",self.save_file)
+        self.tab.bind("<Control-c>",self.copy)
+        self.tab.bind("<Control-v>",self.paste)
         self.tab.bind("<Control-f>",self.findwind)
+        self.tab.bind("<F7>", self.toggle_status_bar)
 
         self.statusos = self.create_status_bar()
         self.toggle_theme()
@@ -358,7 +362,9 @@ class ForeverPad:
             col_text = f"{self.translate[self.language]['col']}.: {col}"
             lpos_text = f"{self.translate[self.language]['lpos']}.: {length+1}"
 
-            self.line_label.config(text=f"{length_text}  {lines_text}  | {col_text}  {lpos_text}")            
+            try:
+                self.line_label.config(text=f"{length_text}  {lines_text}  | {col_text}  {lpos_text}")            
+            except: pass
 
     def create_status_bar(self):
         logging.info('created status bar')
@@ -385,7 +391,7 @@ class ForeverPad:
                 self.add_tab(name=os.path.split(file_path)[1], content=content)
                 self.refreshtab(None)
 
-    def save_file(self):
+    def save_file(self, event=None):
         logging.info('event: save file')
         selected_tab_name = self.tabs.select()
         selected_tab_frame = self.tabs.nametowidget(selected_tab_name)
@@ -429,11 +435,11 @@ class ForeverPad:
         logging.info('cut')
         self.tab.event_generate("<<Cut>>")
 
-    def copy(self):
+    def copy(self, event=None):
         logging.info('copy')
         self.tab.event_generate("<<Copy>>")
 
-    def paste(self):
+    def paste(self, event=None):
         logging.info('paste')
         self.tab.event_generate("<<Paste>>")
         self.root.after(50, self.scroll_to_end)
@@ -441,7 +447,7 @@ class ForeverPad:
     def scroll_to_end(self):
         self.tab.see(tk.END)
 
-    def toggle_status_bar(self):
+    def toggle_status_bar(self, event=None):
         logging.info('event: toggle status bar')
         if self.status_bar_visible == True:
             self.status_bar.destroy()
