@@ -16,6 +16,10 @@ if not os.path.exists("plugins"):
     os.makedirs("plugins")
     logging.info('created plugins/ directory')
 
+if not os.path.exists("colorschemes"):
+    os.makedirs("colorschemes")
+    logging.info('created colorschemes/ directory')
+
 if not os.path.exists('settings.egg'):
     with open('settings.egg', 'w') as file:
         file.write(f"""SETTING -
