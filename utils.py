@@ -2,9 +2,26 @@
 # utilities for ForeverPad
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
-import logging
+import pylog
 import sys
 import json
+import os
+import constants
+
+# logging
+logging = pylog.log()
+
+# default settings
+if not os.path.exists('settings.egg'):
+    with open('settings.egg', 'w') as file:
+        file.write(f"""SETTING -
+FONT: {constants.DEFAULT_FONT_TYPE}
+FONT_SIZE: {constants.DEFAULT_FONT_SIZE}
+COLORSCHEME: {constants.DEFAULT_THEME}
+BOLD: {constants.DEF_BOLD}
+LANG: {constants.ENG}
+DEBUG: {constants.DEF_DEBUG}""")
+    logging.info('Created settings.egg')
 
 language_codes = {
     "English": "en",
