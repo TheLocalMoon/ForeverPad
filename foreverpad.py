@@ -1,4 +1,5 @@
-# main.py
+# foreverpad.py #
+# the app itself
 import tkinter as tk
 import re
 import os

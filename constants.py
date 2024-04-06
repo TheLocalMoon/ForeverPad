@@ -1,4 +1,5 @@
 # constants.py #
+# default settings
 DEFAULT_FONT_SIZE = 12
 DEFAULT_FONT_TYPE = "Consolas"
 DEFAULT_THEME = "heaven"

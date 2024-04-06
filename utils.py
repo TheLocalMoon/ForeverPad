@@ -1,4 +1,5 @@
-# utils.py
+# utils.py #
+# utilities for ForeverPad
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import logging

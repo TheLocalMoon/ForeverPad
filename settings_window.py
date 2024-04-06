@@ -1,3 +1,5 @@
+# settings_window.py #
+# the name explains itself
 import tkinter as tk
 import plugins_window as pw
 import json

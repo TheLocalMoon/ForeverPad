@@ -1,3 +1,5 @@
+# plugins_window.py #
+# the name explains itself
 import tkinter as tk
 from tkinter import ttk, messagebox
 from utils import *
