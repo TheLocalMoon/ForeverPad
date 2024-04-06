@@ -13,7 +13,7 @@ from utils import *
 logging = pylog.log()
 
 if values["DEBUG"] != "True":
-    logging.disable(logging.INFO)
+    logging.disable()
 
 class PluginsMenu:
     def __init__(self, parent):
