@@ -15,7 +15,7 @@ ForeverPad is the best ever Python text editor. Seriously, what did you expect? 
 | Russian    | Done     |
 | Spanish    | Done |
 | French     | ~~Done~~ |
-| German     | ~~Done~~ |
+| German     | Done |
 | Chinese    | ~~Done~~ |
 | Japanese   | ~~Done~~ |
 | Korean     | ~~Done~~ |
