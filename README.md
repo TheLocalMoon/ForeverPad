@@ -5,6 +5,8 @@
 
 ForeverPad is the best ever Python text editor. Seriously, what did you expect? Tabbed interface, plugin supports, color schemes and more!
 
+![Screenshot](https://media.discordapp.net/attachments/1222239617823019018/1224357548522733719/image.png?ex=661d32d3&is=660abdd3&hm=2be731ac0e4529f06f93d76179f1946381fac7e83a8410266774de08bab0e617&=&format=webp&quality=lossless&width=550&height=344)
+
 ## Complete Language List™
 | Language   | Status         |
 |------------|----------------|
